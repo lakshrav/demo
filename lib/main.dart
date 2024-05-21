@@ -1,17 +1,15 @@
+//MODIFIED CODE
+
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:image_cropper/image_cropper.dart';
 
 void main() {
-  runApp(MyApp()); // calls the widget MyApp to run it 
+  runApp(MyApp());
 }
 
-// Break up code into components - "separation of concerns"
-// Widget is an example of that
-
-// A widget can be created by a new class extending 'Stateless Widget'
-// A widget has a 'build' method that returns type 'widget'.
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -38,17 +36,20 @@ class MyHomePage extends StatelessWidget {
           children: [
             ElevatedButton(
               onPressed: () async {
-                // Open image picker to select an image
                 XFile? image = await ImagePicker().pickImage(
                   source: ImageSource.gallery,
-                  imageQuality: 50, // Adjust image quality as needed
+                  imageQuality: 100, // adjust as required
                 );
                 if (image != null) {
-                  // Navigate to the new screen to display the selected image
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => DisplayImageScreen(image.path)),
-                  );
+                  File? croppedImage = await cropImage(image.path);
+                  if (croppedImage != null) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              DisplayImageScreen(croppedImage.path)),
+                    );
+                  }
                 }
               },
               child: Text('Upload Image'),
@@ -57,6 +58,36 @@ class MyHomePage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<File?> cropImage(String imagePath) async {
+    CroppedFile? croppedFile = await ImageCropper().cropImage(
+      sourcePath: imagePath,
+      aspectRatioPresets: [
+        CropAspectRatioPreset.square,
+        CropAspectRatioPreset.ratio3x2,
+        CropAspectRatioPreset.original,
+        CropAspectRatioPreset.ratio4x3,
+        CropAspectRatioPreset.ratio16x9,
+      ],
+      uiSettings: [
+        AndroidUiSettings(
+          toolbarTitle: 'Crop Image',
+          toolbarColor: Colors.deepOrange,
+          toolbarWidgetColor: Colors.white,
+          initAspectRatio: CropAspectRatioPreset.original,
+          lockAspectRatio: false,
+        ),
+        IOSUiSettings(
+          minimumAspectRatio: 1.0,
+        ),
+      ],
+    );
+
+    if (croppedFile != null) {
+      return File(croppedFile.path);
+    }
+    return null;
   }
 }
 
@@ -70,7 +101,8 @@ class DisplayImageScreen extends StatefulWidget {
 
 class _DisplayImageScreenState extends State<DisplayImageScreen> {
   String recognizedText = 'Performing OCR...';
-  String recog_text = "...";
+  String recog_text = '...';
+
   @override
   void initState() {
     super.initState();
@@ -81,13 +113,14 @@ class _DisplayImageScreenState extends State<DisplayImageScreen> {
     final textRecognizer = TextRecognizer();
 
     try {
-      final RecognizedText recognizedText = await textRecognizer.processImage(InputImage.fromFilePath(widget.imagePath)); 
+      final RecognizedText recognizedText = await textRecognizer.processImage(
+          InputImage.fromFilePath(widget.imagePath));
       setState(() {
         recog_text = recognizedText.text;
       });
     } catch (e) {
       setState(() {
-        recognizedText = 'Error: $e';
+        recog_text = 'Error: $e';
       });
     }
   }
@@ -102,14 +135,12 @@ class _DisplayImageScreenState extends State<DisplayImageScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.file(File(widget.imagePath)),
-            SizedBox(height: 20),
-            Text(recog_text),
+            // Image.file(File(widget.imagePath)),
+            // SizedBox(height: 20),
+            Text(recog_text, style: TextStyle(fontSize: MediaQuery.of(context).size.width * 0.05)),
           ],
         ),
       ),
     );
   }
 }
-
-

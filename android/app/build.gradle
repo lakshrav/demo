@@ -26,6 +26,7 @@ android {
     namespace "com.example.demo"
     // compileSdk flutter.compileSdkVersion
     compileSdk 33
+    compileSdkVersion 34
     ndkVersion flutter.ndkVersion
 
     compileOptions {
