@@ -1,10 +1,11 @@
-//MODIFIED CODE
-
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
+import 'package:spell_check_on_client/spell_check_on_client.dart';
+import 'package:flutter/services.dart';
+
 
 void main() {
   runApp(MyApp());
@@ -22,6 +23,8 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+
 
 class MyHomePage extends StatelessWidget {
   @override
@@ -102,21 +105,30 @@ class DisplayImageScreen extends StatefulWidget {
 class _DisplayImageScreenState extends State<DisplayImageScreen> {
   String recognizedText = 'Performing OCR...';
   String recog_text = '...';
+  SpellCheck? spellCheck;
+
 
   @override
   void initState() {
     super.initState();
     performOcr();
   }
+ 
 
   Future<void> performOcr() async {
     final textRecognizer = TextRecognizer();
 
     try {
+      String language = 'en';
+      String content = await rootBundle.loadString('assets/en_words.txt');
+      spellCheck = SpellCheck.fromWordsContent(content,
+          letters: LanguageLetters.getLanguageForLanguage(language));
       final RecognizedText recognizedText = await textRecognizer.processImage(
           InputImage.fromFilePath(widget.imagePath));
+      String CorrectedText = spellCheck!.didYouMean(recognizedText.text);
+
       setState(() {
-        recog_text = recognizedText.text;
+        recog_text = CorrectedText;
       });
     } catch (e) {
       setState(() {
@@ -131,14 +143,16 @@ class _DisplayImageScreenState extends State<DisplayImageScreen> {
       appBar: AppBar(
         title: Text('Display Image'),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Image.file(File(widget.imagePath)),
-            // SizedBox(height: 20),
-            Text(recog_text, style: TextStyle(fontSize: MediaQuery.of(context).size.width * 0.05)),
-          ],
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Image.file(File(widget.imagePath)),
+              // SizedBox(height: 20),
+              Text(recog_text, style: TextStyle(fontSize: MediaQuery.of(context).size.width * 0.05)),
+            ],
+          ),
         ),
       ),
     );
