@@ -40,6 +40,7 @@ dependencies:
   cupertino_icons: ^1.0.6
   google_mlkit_text_recognition: ^0.13.0
   permission_handler: ^11.3.1
+  path_drawing: ^1.0.1
 
 dev_dependencies:
   flutter_test:
@@ -65,8 +66,23 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/
-
+    - assets/ 
+    - assets/fonts/
+    - assets/images/upload.png
+    - assets/images/upload_2.png
+    - assets/images/upload_cloud.png
+  fonts:
+    - family: Gilroy
+      fonts:
+        - asset: assets/fonts/gilroy/Gilroy-Regular.ttf
+        - asset: assets/fonts/gilroy/Gilroy-Bold.ttf
+        - asset: assets/fonts/gilroy/Gilroy-Heavy.ttf
+          # weight: 700
+    - family: Lato
+      fonts:
+        - asset: assets/fonts/lato/Lato-Regular.ttf
+        - asset: assets/fonts/lato/Lato-Bold.ttf
+          # weight: 700
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 
@@ -92,3 +108,4 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
