@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "139599775951",
+    "project_id": "food-scanner-33",
+    "storage_bucket": "food-scanner-33.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:139599775951:android:4cf683ed315f36753dcfba",
+        "android_client_info": {
+          "package_name": "com.example.demo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCdUkBRfGuI7VF7aNws72f1tv2eX24mQJg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -6,6 +6,8 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:spell_check_on_client/spell_check_on_client.dart';
 import 'package:flutter/services.dart';
 import 'package:path_drawing/path_drawing.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
 void main() {
   runApp(MyApp());
@@ -18,9 +20,9 @@ class MyApp extends StatelessWidget {
  
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        textTheme: TextTheme(
-          bodyText1: TextStyle(fontFamily: 'Gilroy'),
-          bodyText2: TextStyle(fontFamily: 'Lato'),
+        textTheme: const TextTheme(
+          bodyLarge: TextStyle(fontFamily: 'Gilroy'),
+          bodyMedium: TextStyle(fontFamily: 'Lato'),
         ),
       ),
       home: MyHomePage(),
