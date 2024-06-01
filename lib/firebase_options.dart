@@ -49,6 +49,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '139599775951',
     projectId: 'food-scanner-33',
     authDomain: 'food-scanner-33.firebaseapp.com',
+    databaseURL: 'https://food-scanner-33-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'food-scanner-33.appspot.com',
   );
 
@@ -57,6 +58,7 @@ class DefaultFirebaseOptions {
     appId: '1:139599775951:android:4cf683ed315f36753dcfba',
     messagingSenderId: '139599775951',
     projectId: 'food-scanner-33',
+    databaseURL: 'https://food-scanner-33-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'food-scanner-33.appspot.com',
   );
 
@@ -65,6 +67,7 @@ class DefaultFirebaseOptions {
     appId: '1:139599775951:ios:900987fb16d18ef53dcfba',
     messagingSenderId: '139599775951',
     projectId: 'food-scanner-33',
+    databaseURL: 'https://food-scanner-33-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'food-scanner-33.appspot.com',
     iosBundleId: 'com.example.demo',
   );
@@ -74,6 +77,7 @@ class DefaultFirebaseOptions {
     appId: '1:139599775951:ios:900987fb16d18ef53dcfba',
     messagingSenderId: '139599775951',
     projectId: 'food-scanner-33',
+    databaseURL: 'https://food-scanner-33-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'food-scanner-33.appspot.com',
     iosBundleId: 'com.example.demo',
   );
