@@ -30,6 +30,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_native_splash: ^2.0.0+1  # Add this line
   camera: ^0.11.0
   file_picker: ^8.0.3
   image_picker: ^1.1.1
@@ -44,6 +45,12 @@ dependencies:
   path_drawing: ^1.0.1
   firebase_core: ^2.31.1
   firebase_database: ^10.5.7
+
+flutter_native_splash:
+  color: "#ffffff"  # Background color for the splash screen
+  image: assets/Ingred-Ease.png  # Path to your splash screen image
+  android: true  # Enable Android configuration
+  ios: true  # Enable iOS configuration
 
 dev_dependencies:
   flutter_test:
@@ -74,6 +81,7 @@ flutter:
     - assets/images/upload.png
     - assets/images/upload_2.png
     - assets/images/upload_cloud.png
+    - assets/Ingred-Ease.png
   fonts:
     - family: Gilroy
       fonts:

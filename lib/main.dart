@@ -237,7 +237,7 @@ class _DisplayImageScreenState extends State<DisplayImageScreen> {
   SpellCheck? spellCheck;
   int numWords = 0;
   double score = 50;
-  List<bool> _isPanelExpanded = [false, false];
+  List<bool> _isPanelExpanded = [false, false, false];
   @override
   void initState() {
     super.initState();
@@ -324,7 +324,7 @@ class _DisplayImageScreenState extends State<DisplayImageScreen> {
         for (var value in data) {
           if (value != null && value is Map) {
             String name = value['Name'];
-            bool isHealthy = value['Is_healthy'] == 'TRUE'; // Adjust based on your data format
+            String isHealthy = value['Is_healthy']; // Adjust based on your data format
 
             if (correctedText.toLowerCase().contains(name.toLowerCase())) {
               itemFound = true;
@@ -347,11 +347,11 @@ class _DisplayImageScreenState extends State<DisplayImageScreen> {
 
   double adjustScoreBasedOnIngredients(List<Map<String, dynamic>> ingredients, double currentScore) {
     for (int i = 0; i < ingredients.length; i++) {
-      bool isHealthy = ingredients[i]['is_healthy'];
+      String isHealthy = ingredients[i]['is_healthy'];
       double adjustmentFactor = (i < 5) ? 0.15 : 0.10;
-      if (isHealthy) {
+      if (isHealthy == "TRUE") {
         currentScore += adjustmentFactor * (100 - currentScore);
-      } else {
+      } else  if (isHealthy == "FALSE"){
         currentScore -= adjustmentFactor * currentScore;
       }
     }
@@ -414,7 +414,7 @@ class _DisplayImageScreenState extends State<DisplayImageScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: matchedIngredients
-                            .where((ingredient) => ingredient['is_healthy'])
+                            .where((ingredient) => ingredient['is_healthy'] == "TRUE")
                             .map((ingredient) => Text(
                                   ingredient['name'].toString().toTitleCase(),
                                   textAlign: TextAlign.start,
@@ -441,7 +441,7 @@ class _DisplayImageScreenState extends State<DisplayImageScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: matchedIngredients
-                            .where((ingredient) => !ingredient['is_healthy'])
+                            .where((ingredient) => ingredient['is_healthy'] == "FALSE")
                             .map((ingredient) => Text(
                                   ingredient['name'].toString().toTitleCase(),
                                   textAlign: TextAlign.start,
@@ -452,6 +452,34 @@ class _DisplayImageScreenState extends State<DisplayImageScreen> {
                     ),
                     ),
                     isExpanded: _isPanelExpanded[1],
+                  ),
+                  ExpansionPanel(
+                    headerBuilder: (BuildContext context, bool isExpanded) {
+                      return ListTile(
+                        title: Text(
+                          'Warning! Consume with Care',
+                          style: TextStyle(fontSize: 22,  fontWeight: FontWeight.w500,  fontFamily: 'Gilroy',),
+                          ),
+                        
+                      );
+                    },
+                    body: Align ( alignment: Alignment.topLeft,
+                      child: Container(
+                      padding: EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: matchedIngredients
+                            .where((ingredient) => ingredient['is_healthy'] == "WARNING")
+                            .map((ingredient) => Text(
+                                  ingredient['name'].toString().toTitleCase(),
+                                  textAlign: TextAlign.start,
+                                  style: TextStyle(fontSize: 20,  fontWeight: FontWeight.normal,  fontFamily: 'Lato',),
+                                ))
+                            .toList(),
+                      ),
+                    ),
+                    ),
+                    isExpanded: _isPanelExpanded[2],
                   ),
                 ],
               ),
