@@ -50,7 +50,7 @@ class MyHomePage extends StatelessWidget {
             Padding(
               padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.1),
               child: Text(
-                'NutriScan',
+                'Ingred-Ease',
                 style: TextStyle(
                   fontFamily: 'Gilroy',
                   fontSize: 40,
@@ -61,7 +61,7 @@ class MyHomePage extends StatelessWidget {
             ),
             SizedBox(height: 10),
             Text(
-              'Check the quality of the products you are consuming.',
+              'You Deserve to Know',
               style: TextStyle(
                 fontFamily: 'Lato',
                 fontSize: 20,
@@ -238,6 +238,7 @@ class _DisplayImageScreenState extends State<DisplayImageScreen> {
   int numWords = 0;
   double score = 50;
   List<bool> _isPanelExpanded = [false, false, false];
+
   @override
   void initState() {
     super.initState();
@@ -358,9 +359,31 @@ class _DisplayImageScreenState extends State<DisplayImageScreen> {
     return currentScore;
   }
 
+  void showInfoDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('What is this?'),
+          content: Text(
+              'The score represents the healthiness of the ingredients detected in the image. Factors taken into consideration include the prevalence of healthy components (given positive weightage) and negative components (given negative weightage). We also take into consideration the prevalence of components in the beginning of the ingredient list, pointing to majority concentrations.'
+              'A higher score indicates healthier ingredients.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
- return Scaffold(
+    return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFF0ea771),
         iconTheme: IconThemeData(color: Colors.white),
@@ -372,23 +395,35 @@ class _DisplayImageScreenState extends State<DisplayImageScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(height: 20),
-              CircularPercentIndicator(
-                radius: 70.0,
-                lineWidth: 12.0,
-                animation: true,
-                percent: score / 100,
-                center: Text(
-                  "${score.toStringAsFixed(0)} / 100",
-                  style: TextStyle(
-                    fontFamily: 'Lato',
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700,
-                    color: Color.fromARGB(255, 42, 42, 42),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularPercentIndicator(
+                    radius: 70.0,
+                    lineWidth: 12.0,
+                    animation: true,
+                    percent: score / 100,
+                    center: Text(
+                      "${score.toStringAsFixed(0)} / 100",
+                      style: TextStyle(
+                        fontFamily: 'Lato',
+                        fontSize: 20,
+                        fontWeight: FontWeight.w700,
+                        color: Color.fromARGB(255, 42, 42, 42),
+                      ),
+                    ),
+                    circularStrokeCap: CircularStrokeCap.round,
+                    progressColor: Color(0xFF0ea771),
+                    backgroundColor: Colors.grey[200]!,
                   ),
-                ),
-                circularStrokeCap: CircularStrokeCap.round,
-                progressColor: Color(0xFF0ea771),
-                backgroundColor: Colors.grey[200]!,
+                  SizedBox(width: 10),
+                  IconButton(
+                    icon: Icon(Icons.info_outline, color: Color(0xFF0ea771)),
+                    onPressed: () {
+                      showInfoDialog(context);
+                    },
+                  ),
+                ],
               ),
               SizedBox(height: 20),
               ExpansionPanelList(
@@ -403,26 +438,30 @@ class _DisplayImageScreenState extends State<DisplayImageScreen> {
                       return ListTile(
                         title: Text(
                           'Healthy Ingredients',
-                          style: TextStyle(fontSize: 22,  fontWeight: FontWeight.w500,  fontFamily: 'Gilroy',),
-                          ),
-                        
+                          style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500, fontFamily: 'Gilroy'),
+                        ),
                       );
                     },
-                    body: Align ( alignment: Alignment.topLeft,
+                    body: Align(
+                      alignment: Alignment.topLeft,
                       child: Container(
-                      padding: EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: matchedIngredients
-                            .where((ingredient) => ingredient['is_healthy'] == "TRUE")
-                            .map((ingredient) => Text(
-                                  ingredient['name'].toString().toTitleCase(),
-                                  textAlign: TextAlign.start,
-                                  style: TextStyle(fontSize: 20,  fontWeight: FontWeight.normal,  fontFamily: 'Lato',),
-                                ))
-                            .toList(),
+                        padding: EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: matchedIngredients
+                              .where((ingredient) => ingredient['is_healthy'] == "TRUE")
+                              .map((ingredient) => Text(
+                                    ingredient['name'].toString().toTitleCase(),
+                                    textAlign: TextAlign.start,
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.normal,
+                                      fontFamily: 'Lato',
+                                    ),
+                                  ))
+                              .toList(),
+                        ),
                       ),
-                    ),
                     ),
                     isExpanded: _isPanelExpanded[0],
                   ),
@@ -431,25 +470,30 @@ class _DisplayImageScreenState extends State<DisplayImageScreen> {
                       return ListTile(
                         title: Text(
                           'Unhealthy Ingredients',
-                          style: TextStyle(fontSize: 22,  fontWeight: FontWeight.normal,  fontFamily: 'Gilroy',),
+                          style: TextStyle(fontSize: 22, fontWeight: FontWeight.normal, fontFamily: 'Gilroy'),
                         ),
                       );
                     },
-                    body: Align ( alignment: Alignment.topLeft,
-                    child: Container(
-                      padding: EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: matchedIngredients
-                            .where((ingredient) => ingredient['is_healthy'] == "FALSE")
-                            .map((ingredient) => Text(
-                                  ingredient['name'].toString().toTitleCase(),
-                                  textAlign: TextAlign.start,
-                                  style: TextStyle(fontSize: 20,  fontWeight: FontWeight.normal,  fontFamily: 'Lato',),
-                                ))
-                            .toList(),
+                    body: Align(
+                      alignment: Alignment.topLeft,
+                      child: Container(
+                        padding: EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: matchedIngredients
+                              .where((ingredient) => ingredient['is_healthy'] == "FALSE")
+                              .map((ingredient) => Text(
+                                    ingredient['name'].toString().toTitleCase(),
+                                    textAlign: TextAlign.start,
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.normal,
+                                      fontFamily: 'Lato',
+                                    ),
+                                  ))
+                              .toList(),
+                        ),
                       ),
-                    ),
                     ),
                     isExpanded: _isPanelExpanded[1],
                   ),
@@ -458,26 +502,30 @@ class _DisplayImageScreenState extends State<DisplayImageScreen> {
                       return ListTile(
                         title: Text(
                           'Warning! Consume with Care',
-                          style: TextStyle(fontSize: 22,  fontWeight: FontWeight.w500,  fontFamily: 'Gilroy',),
-                          ),
-                        
+                          style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500, fontFamily: 'Gilroy'),
+                        ),
                       );
                     },
-                    body: Align ( alignment: Alignment.topLeft,
+                    body: Align(
+                      alignment: Alignment.topLeft,
                       child: Container(
-                      padding: EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: matchedIngredients
-                            .where((ingredient) => ingredient['is_healthy'] == "WARNING")
-                            .map((ingredient) => Text(
-                                  ingredient['name'].toString().toTitleCase(),
-                                  textAlign: TextAlign.start,
-                                  style: TextStyle(fontSize: 20,  fontWeight: FontWeight.normal,  fontFamily: 'Lato',),
-                                ))
-                            .toList(),
+                        padding: EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: matchedIngredients
+                              .where((ingredient) => ingredient['is_healthy'] == "WARNING")
+                              .map((ingredient) => Text(
+                                    ingredient['name'].toString().toTitleCase(),
+                                    textAlign: TextAlign.start,
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.normal,
+                                      fontFamily: 'Lato',
+                                    ),
+                                  ))
+                              .toList(),
+                        ),
                       ),
-                    ),
                     ),
                     isExpanded: _isPanelExpanded[2],
                   ),
