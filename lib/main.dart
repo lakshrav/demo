@@ -366,7 +366,9 @@ class _DisplayImageScreenState extends State<DisplayImageScreen> {
         return AlertDialog(
           title: Text('What is this?'),
           content: Text(
-              'The score represents the healthiness of the ingredients detected in the image. Factors taken into consideration include the prevalence of healthy components (given positive weightage) and negative components (given negative weightage). We also take into consideration the prevalence of components in the beginning of the ingredient list, pointing to majority concentrations.'
+              'The score represents the healthiness of the ingredients detected in the image.' 
+              'Factors taken into consideration include the prevalence of healthy components (given positive weightage) and negative components (given negative weightage).'
+              'We also take into consideration the prevalence of components in the beginning of the ingredient list, pointing to majority concentrations.'
               'A higher score indicates healthier ingredients.'),
           actions: [
             TextButton(
