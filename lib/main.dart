@@ -1,3 +1,4 @@
+
 import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/material.dart';
@@ -11,7 +12,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'firebase_options.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
-
+import 'package:showcaseview/showcaseview.dart';
+import 'onboarding_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -23,20 +25,46 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        textTheme: const TextTheme(
-          bodyLarge: TextStyle(fontFamily: 'Gilroy'),
-          bodyMedium: TextStyle(fontFamily: 'Lato'),
+    return ShowCaseWidget(
+        builder: (context) => MaterialApp(
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+            textTheme: const TextTheme(
+              bodyLarge: TextStyle(fontFamily: 'Gilroy'),
+              bodyMedium: TextStyle(fontFamily: 'Lato'),
+            ),
+          ),
+          // home: MyHomePage(),
+          initialRoute: '/',
+      routes: {
+        '/': (context) => OnboardingScreen(), // OnboardingScreen as the initial route
+        '/home': (context) => MyHomePage(), // Actual app's home screen
+      },
         ),
-      ),
-      home: MyHomePage(),
     );
   }
 }
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  final GlobalKey _uploadImageKey = GlobalKey();
+  final GlobalKey _openCameraKey = GlobalKey();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => showTutorial());
+  }
+
+  void showTutorial() {
+    ShowCaseWidget.of(context).startShowCase([_uploadImageKey, _openCameraKey]);
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,89 +97,98 @@ class MyHomePage extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 20),
-            GestureDetector(
-              onTap: () async {
-                XFile? image = await ImagePicker().pickImage(
-                  source: ImageSource.gallery,
-                  imageQuality: 100,
-                );
-                if (image != null) {
-                  File? croppedImage = await cropImage(image.path);
-                  if (croppedImage != null) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => DisplayImageScreen(croppedImage.path),
-                      ),
-                    );
-                  }
-                }
-              },
-              child: CustomPaint(
-                painter: DottedBorderPainter(borderColor: Color(0xFF0ea771), strokeWidth: 3, dashWidth: 5),
-                child: Container(
-                  width: MediaQuery.of(context).size.width * 0.8,
-                  height: 100,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[100],
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset(
-                        'assets/images/upload_2.png',
-                        width: 30,
-                        height: 30,
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        'Upload Image',
-                        style: TextStyle(
-                          fontFamily: 'Lato',
-                          fontSize: 16,
-                          color: Colors.grey[800],
+            Showcase(
+              key: _uploadImageKey,
+              description: 'Tap here to upload an image of the ingredients.\n\n'
+              'Your additional description text here. \n',
+              child: GestureDetector(
+                onTap: () async {
+                  XFile? image = await ImagePicker().pickImage(
+                    source: ImageSource.gallery,
+                    imageQuality: 100,
+                  );
+                  if (image != null) {
+                    File? croppedImage = await cropImage(image.path);
+                    if (croppedImage != null) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DisplayImageScreen(croppedImage.path),
                         ),
-                      ),
-                    ],
+                      );
+                    }
+                  }
+                },
+                child: CustomPaint(
+                  painter: DottedBorderPainter(borderColor: Color(0xFF0ea771), strokeWidth: 3, dashWidth: 5),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width * 0.8,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[100],
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          'assets/images/upload_2.png',
+                          width: 30,
+                          height: 30,
+                        ),
+                        SizedBox(height: 10),
+                        Text(
+                          'Upload Image',
+                          style: TextStyle(
+                            fontFamily: 'Lato',
+                            fontSize: 16,
+                            color: Colors.grey[800],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
             SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () async {
-                XFile? image = await ImagePicker().pickImage(
-                  source: ImageSource.camera,
-                  imageQuality: 100,
-                );
-                if (image != null) {
-                  File? croppedImage = await cropImage(image.path);
-                  if (croppedImage != null) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => DisplayImageScreen(croppedImage.path),
-                      ),
-                    );
+            Showcase(
+              key: _openCameraKey,
+              description: 'Tap here to open the camera and capture an image of the ingredients.',
+              child: ElevatedButton(
+                onPressed: () async {
+                  XFile? image = await ImagePicker().pickImage(
+                    source: ImageSource.camera,
+                    imageQuality: 100,
+                  );
+                  if (image != null) {
+                    File? croppedImage = await cropImage(image.path);
+                    if (croppedImage != null) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DisplayImageScreen(croppedImage.path),
+                        ),
+                      );
+                    }
                   }
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(
-                  vertical: MediaQuery.of(context).size.height * 0.02,
-                  horizontal: MediaQuery.of(context).size.width * 0.1,
+                },
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(
+                    vertical: MediaQuery.of(context).size.height * 0.02,
+                    horizontal: MediaQuery.of(context).size.width * 0.1,
+                  ),
+                  backgroundColor: Color(0xFFe7faf4),
+                  foregroundColor: Color(0xFF12d18e),
+                  shadowColor: Colors.transparent,
+                  side: BorderSide.none,
                 ),
-                backgroundColor: Color(0xFFe7faf4),
-                foregroundColor: Color(0xFF12d18e),
-                shadowColor: Colors.transparent,
-                side: BorderSide.none,
-              ),
-              child: Text(
-                'Open Camera',
-                style: TextStyle(
-                  fontFamily: 'Lato',
-                  fontSize: 16,
+                child: Text(
+                  'Open Camera',
+                  style: TextStyle(
+                    fontFamily: 'Lato',
+                    fontSize: 16,
+                  ),
                 ),
               ),
             ),
@@ -161,6 +198,7 @@ class MyHomePage extends StatelessWidget {
       ),
     );
   }
+
 
   Future<File?> cropImage(String imagePath) async {
     CroppedFile? croppedFile = await ImageCropper().cropImage(
