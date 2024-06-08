@@ -84,6 +84,12 @@ flutter:
     - assets/images/upload_2.png
     - assets/images/upload_cloud.png
     - assets/Ingred-Ease.png
+    - assets/images/tick_image.png
+    - assets/images/cross_image.png
+    - assets/images/first_screen.png
+    - assets/images/second_screen.png
+    - assets/images/third_screen.png
+
   fonts:
     - family: Gilroy
       fonts:
