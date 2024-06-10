@@ -73,6 +73,9 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       backgroundColor: Colors.white,
       body: Center(
+        child: SingleChildScrollView(
+        child: Padding( // Added Padding here
+            padding: EdgeInsets.all(16.0),
         child: Column(
           children: [
             Padding(
@@ -195,6 +198,8 @@ class _MyHomePageState extends State<MyHomePage> {
             SizedBox(height: MediaQuery.of(context).size.height * 0.1),
           ],
         ),
+        ),
+      ),
       ),
     );
   }
@@ -229,6 +234,8 @@ class _MyHomePageState extends State<MyHomePage> {
     }
     return null;
   }
+
+
 }
 
 class DottedBorderPainter extends CustomPainter {
