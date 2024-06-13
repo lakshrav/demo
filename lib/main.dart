@@ -102,8 +102,7 @@ class _MyHomePageState extends State<MyHomePage> {
             SizedBox(height: 20),
             Showcase(
               key: _uploadImageKey,
-              description: 'Tap here to upload an image of the ingredients.\n\n'
-              'Your additional description text here. \n',
+              description: 'Tap here to upload an image of the ingredients.',
               child: GestureDetector(
                 onTap: () async {
                   XFile? image = await ImagePicker().pickImage(
